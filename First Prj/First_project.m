@@ -87,4 +87,33 @@ figure(8);
 fshift = -25:25;
 stem(fshift, abs(fftshift(S_y)), "filled");
 
+%% Task five
+
+% Generate X sequence
+Binary_X = ones(10^8,1);
+
+% Randomly select half of them. Since P(x=1) = P(x=-1) = 0.5
+random_idx = randperm(10^8);
+idx = random_idx(1:10^8/2);
+Binary_X(idx) = -1;
+
+% Genarate N
+N = randn(10^8,1);
+
+% Generate Y
+Binary_Y = Binary_X + N;
+
+% Estimation (using sign function)
+X_hat = sign(Binary_Y);
+
+% Count the error:
+Error = sum(abs(X_hat - Binary_X));
+Error_per = Error/10^8;
+disp("Error Percentage is:")
+disp(Error_per)
+
+
+
+
+
 
