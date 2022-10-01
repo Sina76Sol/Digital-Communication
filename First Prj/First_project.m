@@ -11,10 +11,9 @@ X = 4 * rand(1000, 1) - 2;
 % Display histogram of the data:
 figure(1);
 h = histogram(X);
-
-% Get the value of each bin:
-disp("Bin values are:");
-disp(h.Values);
+title('Uniform distribution of 1000 data samples')
+xlabel('Bins')
+ylabel('value')
 
 % Calculate the pdf:
 pdf = h.Values/1000;
@@ -27,21 +26,24 @@ figure(2)
 plot(CDF)
 
 % Another way of plotting:
+% Since this way is more accurate, we plot this as the final result:
 sorted = sort(X);
 plot(sorted)
+title('CDF of uniform r.v.')
+xlabel('x')
+ylabel('FX(x)')
 
 %% Task two
 
-% Generate a set of 1000 i.i.d random Gausian numbers
+% Generate a set of 1000 i.i.d random Gaussian numbers
 G_x = randn(1000, 1);
 
 % Display the histogram of data:
 figure(3);
 G_h = histogram(G_x);
-
-% Get the value of each bin:
-disp("Bin values are:");
-disp(G_h.Values);
+title('Gaussian distribution of 1000 data samples')
+xlabel('Bins')
+ylabel('value')
 
 % Calculate the pdf:
 G_pdf = G_h.Values/1000;
@@ -52,6 +54,9 @@ G_CDF = cumsum(G_pdf);
 % Plot CDF:
 figure(4);
 plot(G_CDF)
+title('CDF of Gaussian r.v.')
+xlabel('x')
+ylabel('FX(x)')
 
 %% Task three
 
@@ -107,10 +112,36 @@ Binary_Y = Binary_X + N;
 X_hat = sign(Binary_Y);
 
 % Count the error:
-Error = sum(abs(X_hat - Binary_X));
-Error_per = Error/10^8;
+Error = sum(abs(X_hat - Binary_X))/2;
+Error_per = 100 * Error/10^8;
 disp("Error Percentage is:")
 disp(Error_per)
+
+
+%% Increse SNR
+SNR = 0:1:10;
+sigma = sqrt(1./10.^(SNR/10));
+
+Error_per_SNR = zeros(size(sigma));
+for i=1:numel(sigma)
+    % Generate
+    Noise = normrnd(0,sigma(i), [10^8,1]);
+    Noisy_output = Binary_X + Noise;
+    
+    % Estimate
+    X_hat = sign(Noisy_output);
+
+    % Count the error:
+    Error = sum(abs(X_hat - Binary_X))/2;
+    Error_per_SNR(i) = 100 * Error/10^8;
+end
+
+figure(9)
+semilogy(SNR, Error_per_SNR)
+grid on
+title('Error percentage for different SNR')
+xlabel('SNR')
+ylabel('Error')
 
 
 
