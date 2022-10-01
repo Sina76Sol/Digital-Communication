@@ -61,15 +61,25 @@ ylabel('FX(x)')
 %% Task three
 
 % Calculate autocorrolation funtion
-acf = autocorr(X, NumLags=50);
+
+% We can also use autocorr() function built in MATLAB 
+% acf = autocorr(X, NumLags=50);
+acf = Rx_est(X, 50);
 figure(5)
 stem(acf, "filled");
+title('Autocorrolation of the random process')
+xlabel('M (number of lags, or taw)')
+ylabel('R(taw)')
 
 % Calculate power density spectrum
 S_x = fft(acf);
 figure(6);
+% Since we have 51 datapoints
 fshift = -25:25;
 stem(fshift, abs(fftshift(S_x)), "filled");
+title('Power density of Auto-corrrolation function')
+xlabel('f (Hz)')
+ylabel('Power (watt)')
 
 %% Task four
 
@@ -82,15 +92,23 @@ for i=1:length(X)
 end
 
 % Calculate autocorrolation funtion of filtered random process
-acf_filtered = autocorr(Y, NumLags=50);
+
+% acf_filtered = autocorr(Y, NumLags=50);
+acf_filtered = Rx_est(Y, 50);
 figure(7)
 stem(acf_filtered, "filled");
+title('Autocorrolation of the filtered random process')
+xlabel('M (number of lags, or taw)')
+ylabel('R(taw)')
 
 % Calculate power density spectrum of filtered random process
 S_y = fft(acf_filtered);
 figure(8);
 fshift = -25:25;
 stem(fshift, abs(fftshift(S_y)), "filled");
+title('Power density of filtered auto-corrrolation function')
+xlabel('f (Hz)')
+ylabel('Power (watt)')
 
 %% Task five
 
@@ -98,6 +116,7 @@ stem(fshift, abs(fftshift(S_y)), "filled");
 Binary_X = ones(10^8,1);
 
 % Randomly select half of them. Since P(x=1) = P(x=-1) = 0.5
+% and then, change those from 1 to -1
 random_idx = randperm(10^8);
 idx = random_idx(1:10^8/2);
 Binary_X(idx) = -1;
@@ -112,6 +131,9 @@ Binary_Y = Binary_X + N;
 X_hat = sign(Binary_Y);
 
 % Count the error:
+
+% Since the error is abs(1--1), so it should be divided by 2 to count the 
+% number of error occurance 
 Error = sum(abs(X_hat - Binary_X))/2;
 Error_per = 100 * Error/10^8;
 disp("Error Percentage is:")
@@ -140,11 +162,5 @@ figure(9)
 semilogy(SNR, Error_per_SNR)
 grid on
 title('Error percentage for different SNR')
-xlabel('SNR')
+xlabel('SNR (dB)')
 ylabel('Error')
-
-
-
-
-
-
