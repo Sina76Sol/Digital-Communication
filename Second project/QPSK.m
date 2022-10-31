@@ -1,3 +1,6 @@
+clear;
+clc;
+%% Building the constellation
 c = [sqrt(2)/2+sqrt(2)/2i, -sqrt(2)/2+sqrt(2)/2i,...
     -sqrt(2)/2-sqrt(2)/2i, sqrt(2)/2-sqrt(2)/2i];
 sigpower = pow2db(mean(abs(c).^2));
@@ -23,10 +26,12 @@ for i = 1:length(SNR)
     error_rate(i) = ser;
 end
 
-plot(error_rate)
+plot(error_rate,'-o')
+hold on
 %% Imperical error rate
 delta =sqrt(2);
 Bit_energy = 0.5;
 sigma = sqrt(Bit_energy./(10.^(SNR./10)));
-Pe = 1-((1-qfunc(delta./(2*sigma)).^2))
-
+Pe = 1-(1-qfunc(delta./(2*sigma))).^2;
+plot(Pe, 'r-*')
+legend("experimental", "imperical")
