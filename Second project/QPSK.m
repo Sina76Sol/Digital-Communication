@@ -6,10 +6,10 @@ c_QPSK = [sqrt(2)/2+sqrt(2)/2i, -sqrt(2)/2+sqrt(2)/2i,...
 QPSK_sigpower = pow2db(mean(abs(c_QPSK).^2));
 M = length(c_QPSK);
 
-QPSK_x = randi([0 M-1],10^4,1);
+QPSK_x = randi([0 M-1],10^8,1);
 QPSK_mod_x = genqammod(QPSK_x,c_QPSK);
 
-QPSK_y = awgn(QPSK_mod_x,3,QPSK_sigpower);
+QPSK_y = awgn(QPSK_mod_x,15,QPSK_sigpower);
 
 h = scatterplot(QPSK_y);
 hold on
@@ -26,14 +26,16 @@ for i = 1:length(SNR)
     error_rate(i) = ser;
 end
 
-semilogy(error_rate,'-o')
+semilogy(SNR, error_rate,'-o')
 hold on
 %% Theoritical error rate
 delta =sqrt(2);
 Bit_energy = 0.5;
 sigma = sqrt(Bit_energy./(10.^(SNR./10)));
 Pe = 1-(1-qfunc(delta./(2*sigma))).^2;
-semilogy(Pe, 'r-*')
+semilogy(SNR, Pe, 'r-*')
+xlabel('SNR')
+ylabel('error rate')
 legend("experimental", "theoritical")
 
 %% Build the constellation for 4PAM
