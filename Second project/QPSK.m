@@ -18,15 +18,15 @@ grid
 
 %% Experimental error rate for QPSK
 SNR = 0:3:15;
-error_rate = zeros(size(SNR));
+QPSK_error_rate = zeros(size(SNR));
 for i = 1:length(SNR)
     noisy_sig = awgn(QPSK_mod_x,SNR(i),QPSK_sigpower);
     QPSK_detected = genqamdemod(noisy_sig,c_QPSK);
     [numErrors,ser] = symerr(QPSK_x,QPSK_detected);
-    error_rate(i) = ser;
+    QPSK_error_rate(i) = ser;
 end
 
-semilogy(SNR, error_rate,'-o')
+semilogy(SNR, QPSK_error_rate,'-o')
 hold on
 %% Theoritical error rate for QPSK
 delta =sqrt(2);
@@ -73,3 +73,11 @@ semilogy(SNR, PAM_Pe, 'r-*')
 xlabel('SNR')
 ylabel('error rate')
 legend("experimental", "theoritical")
+hold off
+%% plot both graphs together
+semilogy(SNR, PAM_error_rate)
+hold on
+semilogy(SNR, QPSK_error_rate)
+xlabel('SNR')
+ylabel('error rate')
+legend("4PAM error rate", "QPSK error rate")
